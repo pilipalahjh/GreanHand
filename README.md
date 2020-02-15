@@ -1,3 +1,3 @@
 # GreanHand
-- java练手
-git
+- java project
+git is good tool
