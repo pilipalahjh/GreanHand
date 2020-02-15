@@ -1,3 +1,3 @@
 # GreanHand
 - java project
-git is good tool
+- git is good tool
