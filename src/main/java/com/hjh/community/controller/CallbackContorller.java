@@ -6,9 +6,13 @@ import com.hjh.community.provider.GithubProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 
 /*
@@ -46,7 +50,9 @@ public class CallbackContorller {
 
     @GetMapping("/callback")
     public String Login(@RequestParam(name = "code")String code,
-                        @RequestParam(name = "state")String state){
+                        @RequestParam(name = "state")String state,
+                        HttpServletRequest httpServletRequest
+                        ){
         //获取github返回的code
         log.info("code->"+code);
         //获取将code返回给github获取access_token
@@ -61,8 +67,19 @@ public class CallbackContorller {
         log.info("access_token->"+access_token);
 
         GithubUser githubUser = githubClient.getGithubUserByAccessToken(access_token);
-        log.info(""+githubUser.toString());
 
-        return "index";
+        if(githubUser == null){
+            //登录失败
+            log.info(githubUser.toString()+"登录失败");
+            return "/";
+        }
+        //登录成功获取cookie和session
+        httpServletRequest.getSession().setAttribute("user",githubUser);
+
+
+
+        //重定向 清除地址栏的请求信息
+        log.info(githubUser.toString()+"获取session 重定向回index");
+        return "redirect:/";
     }
 }
