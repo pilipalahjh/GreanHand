@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 
@@ -43,7 +46,8 @@ public class CallbackContorller {
     @GetMapping("/callback")
     public String Login(@RequestParam(name = "code")String code,
                         @RequestParam(name = "state")String state,
-                        HttpServletRequest httpServletRequest
+                        HttpServletRequest httpServletRequest,
+                        HttpServletResponse httpServletResponse
                         ){
         //获取github返回的code
         log.info("code->"+code);
@@ -72,7 +76,7 @@ public class CallbackContorller {
 
         //将用户保存到数据库
         User user = new User();
-        user.setAccountNo("github");
+        user.setAccountNo(String.valueOf(githubUser.getId()));
         user.setName(githubUser.getName());
         user.setToken(UUID.randomUUID().toString());
         user.setGmtModify(System.currentTimeMillis());
@@ -80,6 +84,9 @@ public class CallbackContorller {
         userMapper.insert(user);
 
         log.info(user.toString()+"入库成功");
+
+        //返回cookie
+        httpServletResponse.addCookie(new Cookie("token",user.getToken()));
 
         //重定向 清除地址栏的请求信息
         log.info(githubUser.toString()+"获取session 重定向回index");

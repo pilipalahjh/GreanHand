@@ -153,3 +153,9 @@ public class User {
 public interface UserMapper extends BaseMapper<User> {
 }
 ```
+
+## 使用浏览器返回的cookie判断用户是否登录
+- 获取前端返回的cookie
+
+- 获取cookie中的token 在数据库中查找是否有记录
+- 将查到的用户信息返回前端
