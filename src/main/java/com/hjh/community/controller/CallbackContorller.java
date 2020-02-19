@@ -2,17 +2,17 @@ package com.hjh.community.controller;
 
 import com.hjh.community.dto.AccessTokenDTO;
 import com.hjh.community.dto.GithubUser;
+import com.hjh.community.mapper.UserMapper;
+import com.hjh.community.model.User;
 import com.hjh.community.provider.GithubProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.util.UUID;
 
 
 /*
@@ -33,20 +33,12 @@ public class CallbackContorller {
 
     @Value("${github.client.redirectUri}")
     String redireceUri;
-    //根据配置文件获取client_id和client_secret
-//    static {
-//        Properties properties = new Properties();
-//        try {
-//            properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties"));
-//            client_id = properties.getProperty("githubClint_id");
-//            client_secret = properties.getProperty("githubClient_secret");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     @Autowired
     GithubProvider githubClient;
+
+    @Autowired
+    UserMapper userMapper;
 
     @GetMapping("/callback")
     public String Login(@RequestParam(name = "code")String code,
@@ -68,15 +60,26 @@ public class CallbackContorller {
 
         GithubUser githubUser = githubClient.getGithubUserByAccessToken(access_token);
 
+        log.info("获取github用户信息成功");
+
         if(githubUser == null){
             //登录失败
-            log.info(githubUser.toString()+"登录失败");
+            log.info("登录失败");
             return "/";
         }
         //登录成功获取cookie和session
         httpServletRequest.getSession().setAttribute("user",githubUser);
 
+        //将用户保存到数据库
+        User user = new User();
+        user.setAccountNo("github");
+        user.setName(githubUser.getName());
+        user.setToken(UUID.randomUUID().toString());
+        user.setGmtModify(System.currentTimeMillis());
+        user.setGmtCreate(System.currentTimeMillis());
+        userMapper.insert(user);
 
+        log.info(user.toString()+"入库成功");
 
         //重定向 清除地址栏的请求信息
         log.info(githubUser.toString()+"获取session 重定向回index");

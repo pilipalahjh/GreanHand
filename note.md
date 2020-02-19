@@ -4,6 +4,7 @@
 - thymeleaf 前端技术
 - OkHttp 模拟get或者post方法请求
 - fastJson 快速处理json对象
+- Mybatis Plus
 
 ## Controller层
 
@@ -95,4 +96,60 @@ githubClient_secret:14e0615c7bf319b1cd5f5726fad98358d61b8883
     String client_secret;
     @Value("${github.client.redirectUri}")
     String redireceUri;
+```
+
+## 使用数据库保存用户信息
+- 使用mybatis plus框架
+- 引入依赖
+```xml
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.3.1.tmp</version>
+        </dependency>
+```
+- 创建user表
+```sql
+create table community.user(
+id int(10) auto_increment,
+name varchar(40),
+account_no varchar(20),
+token varchar(36),
+gmt_create bigint,
+gmt_modify bigint ,
+primary key(id));
+```
+
+- 配置数据源
+```text
+spring.datasource.username = root
+spring.datasource.password = root
+spring.datasource.driver-class-name = com.mysql.cj.jdbc.Driver
+spring.datasource.url = jdbc:mysql://localhost:3306/community?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+```
+
+- 编写model层 映射user表
+```java
+@Data
+@TableName("user")
+public class User {
+    @TableId(type= IdType.AUTO)
+    int id;
+    @TableField
+    String name;
+    @TableField("account_no")
+    String accountNo;
+    @TableField("token")
+    String token;
+    @TableField("gmt_create")
+    long gmtCreate;
+    @TableField("gmt_modify")
+    long gmtModify;
+}
+```
+
+- 编写Mapper层 UserMapper
+```java
+public interface UserMapper extends BaseMapper<User> {
+}
 ```
