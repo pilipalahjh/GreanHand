@@ -21,4 +21,6 @@ public class User {
     long gmtCreate;
     @TableField("gmt_modify")
     long gmtModify;
+    @TableField("bio")
+    String bio;
 }

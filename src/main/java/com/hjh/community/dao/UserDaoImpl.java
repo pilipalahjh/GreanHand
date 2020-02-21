@@ -21,7 +21,7 @@ public class UserDaoImpl implements UserDao{
     }
 
     @Override
-    public int RemoveByToken(String token) {
+    public int removeByToken(String token) {
         int flag = 0;
         QueryWrapper<User> queryWrapper = new QueryWrapper();
         queryWrapper.eq("token",token);

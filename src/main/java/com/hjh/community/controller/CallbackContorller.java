@@ -50,7 +50,7 @@ public class CallbackContorller {
                         HttpServletResponse httpServletResponse
                         ){
         //获取github返回的code
-        log.info("code->"+code);
+//        log.info("code->"+code);
         //获取将code返回给github获取access_token
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setCode(code);
@@ -64,7 +64,7 @@ public class CallbackContorller {
 
         GithubUser githubUser = githubClient.getGithubUserByAccessToken(access_token);
 
-        log.info("获取github用户信息成功");
+//        log.info("获取github用户信息成功");
 
         if(githubUser == null){
             //登录失败
@@ -81,9 +81,8 @@ public class CallbackContorller {
         user.setToken(UUID.randomUUID().toString());
         user.setGmtModify(System.currentTimeMillis());
         user.setGmtCreate(System.currentTimeMillis());
+        user.setBio(githubUser.getBio());
         userMapper.insert(user);
-
-        log.info(user.toString()+"入库成功");
 
         //返回cookie
         httpServletResponse.addCookie(new Cookie("token",user.getToken()));

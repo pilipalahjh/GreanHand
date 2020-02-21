@@ -6,5 +6,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface UserDao {
     User findByToken(String token);
-    int RemoveByToken(String token);
+    int removeByToken(String token);
 }
