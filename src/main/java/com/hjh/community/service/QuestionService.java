@@ -49,4 +49,25 @@ public class QuestionService {
         }
         return questionDTOs;
     }
+
+    //根据questionId获取此问题信息以及创建者信息
+    public QuestionDTO getQuestionDTOById(int questionId){
+        QuestionDTO questionDTO = new QuestionDTO();
+        Question question;
+        User user;
+
+        question = questionMapper.selectById(questionId);
+        user = userMapper.selectById(question.getCreator());
+
+        if (user == null){
+            log.info("此问题找不到创建者");
+        }
+
+        questionDTO.setQuestion(question);
+        questionDTO.setUser(user);
+
+        log.info("questionDTO->"+questionDTO);
+
+        return questionDTO;
+    }
 }

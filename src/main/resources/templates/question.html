@@ -1,6 +1,5 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
@@ -14,7 +13,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/inknpm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
 
-    <title>论坛</title>
+    <title>问题详情</title>
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -57,25 +56,22 @@
     </div><!-- /.container-fluid -->
 </nav>
 <div class="container-fluid">
-    <div class="jumbotron">
-        <h1>welcome</h1>
-        <p>欢迎来到我的论坛 畅所欲言</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">提供反馈</a></p>
-    </div>
-    <div  style="width: 60%">
-        <ul class="list-group">
-        <li class="list-group-item" th:each="questionDTO:${questionDTOs}">
-            <span th:text="${questionDTO.user.name}"></span>
-            <br>
-            <a th:text="${questionDTO.question.title}" th:href="@{/questionGet(questionId=${questionDTO.question.id})}"></a>
-            <br>
-            <span>浏览数:</span><span th:text="${questionDTO.question.viewCount}"></span>
-            <span>评论数:</span><span th:text="${questionDTO.question.commentCount}"></span>
-            <span>点赞数:</span><span th:text="${questionDTO.question.likeCount}"></span>
-            <span span th:text="${#dates.format(questionDTO.question.gmtCreate, 'yyyy-MM-dd HH:mm:ss')}"></span>
-        </li>
-        </ul>
-    </div>
+    <span>标题:</span>
+    <span th:text="${questionDTO.question.title}"></span>
+    <br>
+    <span>发布时间:</span>
+    <span th:text="${#dates.format(questionDTO.question.gmtCreate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+    <br>
+    <span>内容:</span>
+    <br>
+    <span th:text="${questionDTO.question.msg}"></span>
+    <br>
+    <span>标签:</span>
+    <span th:text="${questionDTO.question.tag}"></span>
+    <br>
+    <span>发帖人:</span>
+    <span th:text="${questionDTO.user.name}"></span>
+    <span th:text="${questionDTO.user.bio}"></span>
 </div>
 </body>
 </html>

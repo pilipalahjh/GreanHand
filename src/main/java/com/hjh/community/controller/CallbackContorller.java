@@ -82,6 +82,7 @@ public class CallbackContorller {
         //用户存在则只更新token
         if ( (user = userMapper.selectOne(queryWrapper)) != null){
             user.setToken(UUID.randomUUID().toString());
+            user.setGmtModify(System.currentTimeMillis());
             userMapper.updateById(user);
             log.info("查找user并只更新token"+user.toString());
         }else {

@@ -47,6 +47,6 @@ public class PublishController {
         question.setGmtModify(System.currentTimeMillis());
         questionMapper.insert(question);
         log.info("添加问题成功->"+question.toString());
-        return "index";
+        return "redirect:/";
     }
 }
