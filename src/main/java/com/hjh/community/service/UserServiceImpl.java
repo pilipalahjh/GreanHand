@@ -1,4 +1,4 @@
-package com.hjh.community.dao;
+package com.hjh.community.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hjh.community.mapper.UserMapper;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class UserDaoImpl implements UserDao{
+public class UserServiceImpl implements UserService{
     @Autowired
     UserMapper userMapper;
     @Override
@@ -28,4 +28,23 @@ public class UserDaoImpl implements UserDao{
         flag = userMapper.delete(queryWrapper);
         return flag;
     }
+
+    //清空用户的token
+    @Override
+    public int clearToken(User user) {
+        int flag = 0;
+        user.setToken("");
+        flag = userMapper.updateById(user);
+        return flag;
+    }
+
+    @Override
+    public int clearToken(String token) {
+        int flag = 0;
+        User user = findByToken(token);
+        flag = clearToken(user);
+        return flag;
+    }
+
+
 }

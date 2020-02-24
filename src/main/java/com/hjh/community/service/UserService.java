@@ -1,10 +1,12 @@
-package com.hjh.community.dao;
+package com.hjh.community.service;
 
 import com.hjh.community.model.User;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface UserDao {
+public interface UserService {
     User findByToken(String token);
     int removeByToken(String token);
+    int clearToken(User user);
+    int clearToken(String token);
 }

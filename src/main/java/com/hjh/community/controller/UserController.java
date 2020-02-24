@@ -1,6 +1,6 @@
 package com.hjh.community.controller;
 
-import com.hjh.community.dao.UserDao;
+import com.hjh.community.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class UserController {
     @Autowired
-    UserDao userDao;
+    UserService userService;
 
     //根据token在数据库中将信息去掉
     @GetMapping("/logout")
@@ -21,12 +21,16 @@ public class UserController {
         for (Cookie tmpCookie:cookies){
             if (tmpCookie.getName().equals("token")){
                 if (tmpCookie.getValue() != null) {
-                    userDao.removeByToken(tmpCookie.getValue());
+//                    userDao.removeByToken(tmpCookie.getValue());
+                      String token = tmpCookie.getValue();
+                      log.info("token->"+token);
+                      userService.clearToken(token);
+                      tmpCookie.setValue(null);
+                      httpServletRequest.removeAttribute("user");
                 }
                 break;
             }
         }
-
         return "redirect:/";
     }
 

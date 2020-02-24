@@ -1,5 +1,6 @@
 package com.hjh.community.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hjh.community.dto.AccessTokenDTO;
 import com.hjh.community.dto.GithubUser;
 import com.hjh.community.mapper.UserMapper;
@@ -74,15 +75,27 @@ public class CallbackContorller {
         //登录成功获取cookie和session
         httpServletRequest.getSession().setAttribute("user",githubUser);
 
-        //将用户保存到数据库
-        User user = new User();
-        user.setAccountNo(String.valueOf(githubUser.getId()));
-        user.setName(githubUser.getName());
-        user.setToken(UUID.randomUUID().toString());
-        user.setGmtModify(System.currentTimeMillis());
-        user.setGmtCreate(System.currentTimeMillis());
-        user.setBio(githubUser.getBio());
-        userMapper.insert(user);
+        //如果githubUser.getId在数据库中有数据则直接返回对象即可
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("account_no",String.valueOf(githubUser.getId()));
+        User user;
+        //用户存在则只更新token
+        if ( (user = userMapper.selectOne(queryWrapper)) != null){
+            user.setToken(UUID.randomUUID().toString());
+            userMapper.updateById(user);
+            log.info("查找user并只更新token"+user.toString());
+        }else {
+            //用户信息在表中不存在 则将用户保存到数据库
+            user = new User();
+            user.setAccountNo(String.valueOf(githubUser.getId()));
+            user.setName(githubUser.getName());
+            user.setToken(UUID.randomUUID().toString());
+            user.setGmtModify(System.currentTimeMillis());
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setBio(githubUser.getBio());
+            log.info("新增user->"+user.toString());
+            userMapper.insert(user);
+        }
 
         //返回cookie
         httpServletResponse.addCookie(new Cookie("token",user.getToken()));
