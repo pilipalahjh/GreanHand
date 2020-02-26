@@ -1,10 +1,14 @@
 package com.hjh.community.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hjh.community.dto.PaginationDTO;
 import com.hjh.community.dto.QuestionDTO;
 import com.hjh.community.mapper.QuestionMapper;
 import com.hjh.community.mapper.UserMapper;
 import com.hjh.community.model.Question;
 import com.hjh.community.model.User;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -66,8 +70,42 @@ public class QuestionService {
         questionDTO.setQuestion(question);
         questionDTO.setUser(user);
 
-        log.info("questionDTO->"+questionDTO);
-
         return questionDTO;
     }
+
+    //总页数 输入参数 一页显示的数量
+    public int getQuestionPageCount(int size){
+        int page = 0;
+        int allCount = 0;
+        allCount = questionMapper.selectCount(null);
+        double tmp = allCount*1.0/size;
+        page = (int) Math.ceil(tmp);
+        return page;
+    }
+
+    //获取question的分页对象
+    public IPage<Question> getIPageQuestion(int currentPage,int size){
+        Page<Question> page = new Page<>(currentPage,size);
+        IPage<Question> questionIPage = questionMapper.selectPage(page,null);
+        return questionIPage;
+    }
+
+    //通过question的分页对象获取questionDTO的分页对象
+    public PaginationDTO<QuestionDTO> getPaginationDTO(int currentPage,int size){
+        //页数
+        int pageCount;
+        IPage<Question> questionIPage = getIPageQuestion(currentPage,size);
+        pageCount = (int)questionIPage.getPages();
+        List<QuestionDTO> questionDTOs = new ArrayList<>();
+        //遍历 questions获取QuestionDTO集合
+        List<Question> questions = questionIPage.getRecords();
+
+        for (Question tmpQuestion:questions){
+            QuestionDTO questionDTO = getQuestionDTOById(tmpQuestion.getId());
+            questionDTOs.add(questionDTO);
+        }
+        PaginationDTO<QuestionDTO> questionDTOPaginationDTO = new PaginationDTO<>(questionDTOs,currentPage,pageCount,size);
+        return questionDTOPaginationDTO;
+    }
+
 }

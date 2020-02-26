@@ -109,17 +109,6 @@ githubClient_secret:14e0615c7bf319b1cd5f5726fad98358d61b8883
         </dependency>
 ```
 - 创建user表
-```sql
-create table community.user(
-id int(10) auto_increment,
-name varchar(40),
-account_no varchar(20),
-token varchar(36),
-gmt_create bigint,
-gmt_modify bigint ,
-primary key(id));
-```
-
 - 配置数据源
 ```text
 spring.datasource.username = root
@@ -159,3 +148,86 @@ public interface UserMapper extends BaseMapper<User> {
 
 - 获取cookie中的token 在数据库中查找是否有记录
 - 将查到的用户信息返回前端
+
+## 分页功能
+### config 层
+- 加载mybatis plus的分页功能
+```java
+@Configuration
+@MapperScan("com.hjh.community.mapper*")
+public class MybatisPlusConfig {
+    @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        return new PaginationInterceptor();
+    }
+```
+
+### service层
+- 使用当前页和每页数量变量来控制显示数据 默认当前页1 每页数量3
+```java
+    int pageCount = 3;
+
+    int pageIndex = 1;
+```
+- 使用mapper的方法查询出Question的分页对象
+```java
+    public IPage<Question> getQuestionPage(){
+        //查询第index页 每页返回coun条
+        Page<Question> questionPage = new Page<>(this.pageIndex,this.getPageCount());
+        IPage<Question> questionIPage = questionMapper.selectPage(questionPage,null);
+        return questionIPage;
+    }
+```
+- 遍历分页Question分页对象 管理user对象组合QuestionDTO对象
+```java
+    public List<QuestionDTO> getQuestionDTOListPage(){
+        List<Question> questions = getQuestionPage();
+        List<QuestionDTO> questionDTOs = new ArrayList<>();
+        for (Question tmpQuestion:questions){
+            QuestionDTO questionDTO;
+            questionDTO = getQuestionDTOById(tmpQuestion.getId());
+            questionDTOs.add(questionDTO);
+        }
+        return questionDTOs;
+    }
+```
+- 获取页总数
+```java
+    public int getQuestionPageCount(){
+        int page = 0;
+        int allCount = 0;
+        allCount = questionMapper.selectCount(null);
+        double tmp = allCount*1.0/this.getPageCount();
+        page = (int) Math.ceil(tmp);
+        return page;
+    }
+```
+- 返回一个页码集合给前端遍历
+```java
+    public List<Integer> getQuestionCountList(){
+        int count = getQuestionPageCount();
+        List<Integer> integers = new ArrayList<>();
+        for (int i = 1; i <= count;i++){
+            integers.add(i);
+        }
+        return integers;
+    }
+```
+
+### controller层
+-  获取页码集合和QuesrtionDTO集合返回前端
+```java
+List<Integer> pageList = questionService.getQuestionCountList();
+        questionDTOs = questionService.getQuestionDTOListPage();
+
+        model.addAttribute("questionDTOs",questionDTOs);
+        model.addAttribute("pageList",pageList);
+```
+- 翻页设置当前页码并重新获取值
+```java
+    @GetMapping("/questionDTOPage")
+    public String questionDTOPage(@RequestParam int page){
+        questionService.setPageIndex(page);
+        return "redirect:/";
+    }
+```

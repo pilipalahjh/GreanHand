@@ -65,16 +65,33 @@
     <div  style="width: 60%">
         <ul class="list-group">
         <li class="list-group-item" th:each="questionDTO:${questionDTOs}">
-            <span th:text="${questionDTO.user.name}"></span>
-            <br>
             <a th:text="${questionDTO.question.title}" th:href="@{/questionGet(questionId=${questionDTO.question.id})}"></a>
             <br>
-            <span>浏览数:</span><span th:text="${questionDTO.question.viewCount}"></span>
-            <span>评论数:</span><span th:text="${questionDTO.question.commentCount}"></span>
-            <span>点赞数:</span><span th:text="${questionDTO.question.likeCount}"></span>
+            <span th:text="${questionDTO.user.name}"></span>
+            <br>
+            <span th:text="${questionDTO.question.viewCount}"></span><span>次浏览</span>
+            <span th:text="${questionDTO.question.commentCount}"></span><span>个评论</span>
+            <span th:text="${questionDTO.question.likeCount}"></span><span>个点赞</span>
             <span span th:text="${#dates.format(questionDTO.question.gmtCreate, 'yyyy-MM-dd HH:mm:ss')}"></span>
         </li>
         </ul>
+        <!--   分页组件     -->
+        <div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li>
+                        <a href="/questionDTOPageLast">&laquo;</a>
+                    </li>
+                    <li th:each="page:${pageList}">
+                        <a th:text="${page}" th:href="@{/questionDTOPage(page=${page})}" th:if="${page}!=${currentPage}"></a>
+                        <a th:text="${page}" th:if="${page}==${currentPage}" style="color: #999;"></a>
+                    </li>
+                    <li>
+                        <a href="/questionDTOPageNext">&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 </div>
 </body>

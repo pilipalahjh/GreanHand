@@ -14,7 +14,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    //根据token在数据库中将信息去掉
+    //登出将cookie中的token去掉以及将session中的user对象去掉
     @GetMapping("/logout")
     public String logout(HttpServletRequest httpServletRequest){
         Cookie[] cookies = httpServletRequest.getCookies();
@@ -26,12 +26,13 @@ public class UserController {
                       log.info("token->"+token);
                       userService.clearToken(token);
                       tmpCookie.setValue(null);
-                      httpServletRequest.removeAttribute("user");
                 }
                 break;
             }
         }
+        httpServletRequest.getSession().removeAttribute("user");
         return "redirect:/";
     }
+
 
 }
