@@ -20,15 +20,6 @@ public class UserServiceImpl implements UserService{
         return user;
     }
 
-    @Override
-    public int removeByToken(String token) {
-        int flag = 0;
-        QueryWrapper<User> queryWrapper = new QueryWrapper();
-        queryWrapper.eq("token",token);
-        flag = userMapper.delete(queryWrapper);
-        return flag;
-    }
-
     //清空用户的token
     @Override
     public int clearToken(User user) {

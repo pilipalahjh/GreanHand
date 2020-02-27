@@ -162,6 +162,9 @@ public class MybatisPlusConfig {
     }
 ```
 
+### dto层
+- 封装QuestionDTO和分页组件的对象
+
 ### service层
 - 使用当前页和每页数量变量来控制显示数据 默认当前页1 每页数量3
 ```java
@@ -191,43 +194,50 @@ public class MybatisPlusConfig {
         return questionDTOs;
     }
 ```
-- 获取页总数
+- 将questionDTO 当前页 总页数 页大小 封装到 PaginationDTO 返回此对象
 ```java
-    public int getQuestionPageCount(){
-        int page = 0;
-        int allCount = 0;
-        allCount = questionMapper.selectCount(null);
-        double tmp = allCount*1.0/this.getPageCount();
-        page = (int) Math.ceil(tmp);
-        return page;
-    }
-```
-- 返回一个页码集合给前端遍历
-```java
-    public List<Integer> getQuestionCountList(){
-        int count = getQuestionPageCount();
-        List<Integer> integers = new ArrayList<>();
-        for (int i = 1; i <= count;i++){
-            integers.add(i);
-        }
-        return integers;
-    }
+        PaginationDTO<QuestionDTO> questionDTOPaginationDTO = new PaginationDTO<>(questionDTOs,currentPage,pageCount,size);
+        return questionDTOPaginationDTO;
 ```
 
 ### controller层
--  获取页码集合和QuesrtionDTO集合返回前端
+-  从 PaginationDTO 中 获取页码集合和QuesrtionDTO集合和当前页返回前端
 ```java
-List<Integer> pageList = questionService.getQuestionCountList();
-        questionDTOs = questionService.getQuestionDTOListPage();
+        int size = 3;
+        questionDTOPaginationDTO = questionService.getPaginationDTO(page,size);
+        List<Integer> pageList = questionDTOPaginationDTO.getPageList();
+        List<QuestionDTO> questionDTOs = questionDTOPaginationDTO.getList();
 
         model.addAttribute("questionDTOs",questionDTOs);
         model.addAttribute("pageList",pageList);
+        model.addAttribute("currentPage",page);
 ```
-- 翻页设置当前页码并重新获取值
+- 翻页重新 设置 PaginationDTO的值
 ```java
-    @GetMapping("/questionDTOPage")
-    public String questionDTOPage(@RequestParam int page){
-        questionService.setPageIndex(page);
-        return "redirect:/";
+        if (questionDTOPaginationDTO.isHasPrevious()){
+            questionDTOPaginationDTO = questionService.getPaginationDTO(currentPage-1,pageSize);
+        }else {
+            //没有上一页 返回首页
+            questionDTOPaginationDTO = questionService.getPaginationDTO(1,pageSize);
+        }
+```
+
+## 拦截器 从session中获取user对象 未获取到则直接返回首页
+- 文档地址{https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-handlermapping-interceptor}
+### 实现 HandlerInterceptor 接口 
+- 重写 preHandle 方法
+- 校验session 和cookie是否有user对象或者token 并尝试获取session和cookie
+
+### 配置 将拦截器注册
+- 实现 WebMvcConfigurer 接口
+- 重写 addInterceptors 方法
+- 将请求地址注册
+- 若拦截器中依赖了其他bean 则需要 以下面方式处理 (由于拦截器加载会比上下文先加载 导致依赖自动注入失败)
+```java
+    @Bean
+    public LoginHandlerInterceptor getLoginHandlerInterceptor(){
+        return new LoginHandlerInterceptor();
     }
 ```
+
+

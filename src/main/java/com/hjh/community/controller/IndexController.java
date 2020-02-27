@@ -3,8 +3,8 @@ package com.hjh.community.controller;
 import com.hjh.community.dto.PaginationDTO;
 import com.hjh.community.service.UserService;
 import com.hjh.community.dto.QuestionDTO;
-import com.hjh.community.model.User;
 import com.hjh.community.service.QuestionService;
+import com.hjh.community.utils.ModelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -49,55 +48,32 @@ public class IndexController {
         model.addAttribute("questionDTOs",questionDTOs);
         model.addAttribute("pageList",pageList);
         model.addAttribute("currentPage",currentPage);
-        //session中有User对象就不需要去数据库中查找了 提高效率
-        if (httpServletRequest.getSession().getAttribute("user") != null){
-            return "index";
-        }
 
-        //获取浏览器请求的cookie中的token 再去数据库中查找记录返回前端
-        Cookie[] cookies = httpServletRequest.getCookies();
-        if (cookies == null){
-            log.info("cookie为空");
-            return "index";
-        }
-        //去cookie中token的内容去数据库中查找信息
-        for (Cookie tmpCookie:cookies){
-            if (tmpCookie.getName().equals("token")){
-                String token = tmpCookie.getValue();
-                if (token == null){
-                    log.info("token为空");
-                    return "index";
-                }
-                log.info("token->"+token);
-                User user = userService.findByToken(token);
-                if (user == null){
-                    httpServletRequest.getSession().removeAttribute("user");
-                    log.info("不正确的token返回user对象为空");
-                    return "index";
-                }
-                log.info("返回user对象"+user.toString());
-                httpServletRequest.getSession().setAttribute("user",user);
-                break;
-            }
-        }
         return "index";
     }
 
+    //获取问题详情
+    @GetMapping("/questionGet")
+    public String questionGet(@RequestParam(name="questionId")int questionId,Model model){
+        QuestionDTO questionDTO;
+        questionDTO = questionService.getQuestionDTOById(questionId);
+        model.addAttribute("questionDTO",questionDTO);
+        return "question";
+    }
+
+    //分页相关
     //分页查询QuestionDTO
     @GetMapping("/questionDTOPage")
     public String questionDTOPage(@RequestParam int page,Model model){
         //一页显示的数量
         int size = 3;
         questionDTOPaginationDTO = questionService.getPaginationDTO(page,size);
-        List<Integer> pageList = questionDTOPaginationDTO.getPageList();
-        List<QuestionDTO> questionDTOs = questionDTOPaginationDTO.getList();
-
-        model.addAttribute("questionDTOs",questionDTOs);
-        model.addAttribute("pageList",pageList);
         model.addAttribute("currentPage",page);
+        //将 questionDTOPaginationDTO 中的值分别取值放入model
+        ModelUtils.setQuestionPaginationDTO2Model(questionDTOPaginationDTO,model);
         return "index";
     }
-
+    //上一页
     @GetMapping("/questionDTOPageLast")
     public String questionDTOPage(Model model){
         int currentPage;
@@ -111,16 +87,13 @@ public class IndexController {
             //没有上一页 返回首页
             questionDTOPaginationDTO = questionService.getPaginationDTO(1,pageSize);
         }
-        List<Integer> pageList = questionDTOPaginationDTO.getPageList();
-        List<QuestionDTO> questionDTOs;
-        questionDTOs = questionDTOPaginationDTO.getList();
         currentPage = questionDTOPaginationDTO.getCurrentPage();
-        model.addAttribute("questionDTOs",questionDTOs);
-        model.addAttribute("pageList",pageList);
         model.addAttribute("currentPage",currentPage);
+        //将 questionDTOPaginationDTO 中的值分别取值放入model
+        ModelUtils.setQuestionPaginationDTO2Model(questionDTOPaginationDTO,model);
         return "index";
     }
-
+    //下一页
     @GetMapping("/questionDTOPageNext")
     public String questionDTOPageNext(Model model){
         int currentPage;
@@ -134,22 +107,11 @@ public class IndexController {
             //没有上一页 返回首页
             questionDTOPaginationDTO = questionService.getPaginationDTO(1,pageSize);
         }
-        List<Integer> pageList = questionDTOPaginationDTO.getPageList();
-        List<QuestionDTO> questionDTOs;
-        questionDTOs = questionDTOPaginationDTO.getList();
         currentPage = questionDTOPaginationDTO.getCurrentPage();
-        model.addAttribute("questionDTOs",questionDTOs);
-        model.addAttribute("pageList",pageList);
         model.addAttribute("currentPage",currentPage);
+        //将 questionDTOPaginationDTO 中的值分别取值放入model
+        ModelUtils.setQuestionPaginationDTO2Model(questionDTOPaginationDTO,model);
         return "index";
     }
 
-
-    @GetMapping("/questionGet")
-    public String questionGet(@RequestParam(name="questionId")int questionId,Model model){
-        QuestionDTO questionDTO;
-        questionDTO = questionService.getQuestionDTOById(questionId);
-        model.addAttribute("questionDTO",questionDTO);
-        return "question";
-    }
 }

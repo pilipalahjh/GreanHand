@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface UserService {
     User findByToken(String token);
-    int removeByToken(String token);
     int clearToken(User user);
     int clearToken(String token);
 }

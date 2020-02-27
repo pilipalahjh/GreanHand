@@ -1,5 +1,6 @@
 package com.hjh.community.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hjh.community.dto.PaginationDTO;
@@ -8,7 +9,6 @@ import com.hjh.community.mapper.QuestionMapper;
 import com.hjh.community.mapper.UserMapper;
 import com.hjh.community.model.Question;
 import com.hjh.community.model.User;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,6 +52,15 @@ public class QuestionService {
             }
         }
         return questionDTOs;
+    }
+
+    //根据creator获取Question列表
+    public List<Question> getQuestionListByCreator(int userId){
+        List<Question> questions;
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("creator", userId);
+        questions = questionMapper.selectList(queryWrapper);
+        return questions;
     }
 
     //根据questionId获取此问题信息以及创建者信息

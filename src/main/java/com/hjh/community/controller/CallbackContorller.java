@@ -62,7 +62,9 @@ public class CallbackContorller {
 
         String access_token = githubClient.getAccessToken(accessTokenDTO);
         log.info("access_token->"+access_token);
-
+        if (access_token == null){
+            return "redirect:/";
+        }
         GithubUser githubUser = githubClient.getGithubUserByAccessToken(access_token);
 
 //        log.info("获取github用户信息成功");
@@ -73,7 +75,7 @@ public class CallbackContorller {
             return "/";
         }
         //登录成功获取cookie和session
-        httpServletRequest.getSession().setAttribute("user",githubUser);
+        //httpServletRequest.getSession().setAttribute("user",githubUser);
 
         //如果githubUser.getId在数据库中有数据则直接返回对象即可
         QueryWrapper queryWrapper = new QueryWrapper();
@@ -98,6 +100,8 @@ public class CallbackContorller {
             userMapper.insert(user);
         }
 
+        //登录成功获取cookie和session
+        httpServletRequest.getSession().setAttribute("user",user);
         //返回cookie
         httpServletResponse.addCookie(new Cookie("token",user.getToken()));
 
