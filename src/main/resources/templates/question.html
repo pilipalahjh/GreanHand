@@ -26,6 +26,9 @@
     <span>发布时间:</span>
     <span th:text="${#dates.format(questionDTO.question.gmtCreate, 'yyyy-MM-dd HH:mm:ss')}"></span>
     <br>
+    <span>最后修改时间:</span>
+    <span th:text="${#dates.format(questionDTO.question.gmtModify, 'yyyy-MM-dd HH:mm:ss')}"></span>
+    <br>
     <span>内容:</span>
     <br>
     <span th:text="${questionDTO.question.msg}"></span>

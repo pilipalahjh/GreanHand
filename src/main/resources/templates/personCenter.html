@@ -24,17 +24,44 @@
                 <h3 th:text="${selection}" th:if="${selection}"></h3>
                 <h3 th:if="not ${selection}">问题列表</h3>
             </span>
-            <li th:each="question:${questions}" class="list-group-item">
+            <li th:each="question:${questions}" th:if="${questions}" class="list-group-item">
+                <a>问题id:</a>
+                <a th:text="${question.id}" th:href="@{/personCenter/question(id=${question.id})}"></a>
+                <br>
                 <a>标题:</a>
-                <a th:text="${question.title}"></a>
+                <a th:text="${question.title}" th:href="@{/personCenter/question(id=${question.id})}"></a>
                 <br>
                 <a>内容:</a>
-                <a th:text="${question.msg}"></a>
+                <a th:text="${question.msg}" th:href="@{/personCenter/question(id=${question.id})}"></a>
                 <br>
                 <a>标签:</a>
-                <a th:text="${question.tag}"></a>
+                <a th:text="${question.tag}" th:href="@{/personCenter/question(id=${question.id})}"></a>
             </li>
+            <form method="post" action="/questionUpdate">
+            <li th:if="${question}" class="list-group-item">
+                <input type="hidden" th:value="${question.id}" class="form-control" name = "id" />
+                <a>问题id:</a>
+                <a th:text="${question.id}"></a>
+                <br>
+                <a>标题:</a>
+                <input th:value="${question.title}" class="form-control" name ="title" />
+                <br>
+                <a>内容:</a>
+                <input th:value="${question.msg}" class="form-control" name ="msg" />
+                <br>
+                <a>标签:</a>
+                <input th:value="${question.tag}" class="form-control" name ="tag"/>
+                <br>
+                <button class="btn btn-warning" type="submit">
+                    修改
+                </button>
+                <span class="btn btn-danger">
+                    <a th:href="@{/questionDelete(id = ${question.id})}">删除</a>
+                </span>
+            </li>
+            </form>
         </ul>
+
     </div>
     <div style="float: left;width: 30%" >
         <ul style="width: 90%">

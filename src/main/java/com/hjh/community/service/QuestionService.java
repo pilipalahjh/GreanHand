@@ -117,4 +117,22 @@ public class QuestionService {
         return questionDTOPaginationDTO;
     }
 
+    public int deleteById(int id){
+        int i = 0;
+
+        i = questionMapper.deleteById(id);
+        return i;
+    }
+
+    public int updateById(int id,String title,String msg,String tag){
+        int flag = 0;
+        Question question = new Question();
+        question.setId(id);
+        question.setTitle(title);
+        question.setMsg(msg);
+        question.setTag(tag);
+        question.setGmtModify(System.currentTimeMillis());
+        flag = questionMapper.updateById(question);
+        return flag;
+    }
 }
