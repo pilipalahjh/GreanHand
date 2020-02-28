@@ -1,19 +1,22 @@
 package com.hjh.community.controller;
 
+import com.hjh.community.exception.CustomizeErrorEnum;
+import com.hjh.community.exception.CustomizeException;
 import com.hjh.community.mapper.QuestionMapper;
 import com.hjh.community.model.Question;
 import com.hjh.community.service.QuestionService;
 import com.hjh.community.utils.ModelUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
+@Slf4j
 public class PersonCenterController {
     @Autowired
     QuestionService questionService;
@@ -59,11 +62,11 @@ public class PersonCenterController {
     }
 
     //个人中心点击question展示的信息
-    @GetMapping("/personCenter/question")
-    public String personQuestion(@RequestParam int id,Model model){
+    @GetMapping("/personCenter/question/{id}")
+    public String personQuestion(@PathVariable int id,Model model){
         Question question = questionMapper.selectById(id);
         if (question == null){
-            return "/personCenter";
+            throw new CustomizeException(CustomizeErrorEnum.QUESTION_NOT_FOUND);
         }
         model.addAttribute("selection","问题详情");
         model.addAttribute("question",question);

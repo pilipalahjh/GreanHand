@@ -240,4 +240,25 @@ public class MybatisPlusConfig {
     }
 ```
 
+### 客户端request 发送cookie 服务器通过response 返回cookie给客户端
+
+## 添加全局异常处理
+- spring 默认错误页面为 error.html 默认异常路径 /error
+### 添加客户化异常类 以及 错误码枚举类 定义错误
+- CustomizeException
+- CustomizeErrorEnum
+
+### 添加全局的客户化异常处理类
+- CustomizeGlobalExceptionHandle
+- @ControllerAdvice注解用于处理异常 主要是对 Spring MVC 抛出的异常进行处理 无法对404做处理(404不进入控制器)
+- @ExceptionHandler(Exception.class)注解用于表示捕捉异常的种类
+
+### 异常请求类 可对/error 进行处理 要继承 ErrorController 接口
+- CustomizeErrorController
+
+
+
+
+
+
 

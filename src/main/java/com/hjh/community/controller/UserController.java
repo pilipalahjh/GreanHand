@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 @Slf4j
@@ -19,20 +20,10 @@ public class UserController {
     QuestionService questionService;
     //登出将cookie中的token去掉以及将session中的user对象去掉
     @GetMapping("/logout")
-    public String logout(HttpServletRequest httpServletRequest){
-        Cookie[] cookies = httpServletRequest.getCookies();
-        for (Cookie tmpCookie:cookies){
-            if (tmpCookie.getName().equals("token")){
-                if (tmpCookie.getValue() != null) {
-//                    userDao.removeByToken(tmpCookie.getValue());
-                      String token = tmpCookie.getValue();
-                      log.info("token->"+token);
-                      userService.clearToken(token);
-                      tmpCookie.setValue(null);
-                }
-                break;
-            }
-        }
+    public String logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+        //从response中移除cookie
+        httpServletResponse.addCookie(new Cookie("token",null));
+        //从request中移除session
         httpServletRequest.getSession().removeAttribute("user");
         return "redirect:/";
     }

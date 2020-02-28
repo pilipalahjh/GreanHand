@@ -1,5 +1,7 @@
 package com.hjh.community.controller;
 
+import com.hjh.community.exception.CustomizeErrorEnum;
+import com.hjh.community.exception.CustomizeException;
 import com.hjh.community.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,10 @@ public class QuestionController {
 
     @GetMapping("/questionDelete")
     public String questionDelete(@RequestParam int id){
-        questionService.deleteById(id);
+        int flag = questionService.deleteById(id);
+        if (flag != 1){
+            throw new CustomizeException(CustomizeErrorEnum.DELETE_QUESTION_FAILURE);
+        }
         return "redirect:/personCenter";
     }
 
@@ -25,8 +30,10 @@ public class QuestionController {
                                  @RequestParam String title,
                                  @RequestParam String msg,
                                  @RequestParam String tag){
-        log.info("id->"+id);
-        questionService.updateById(id,title,msg,tag);
+        int flag = questionService.updateById(id,title,msg,tag);
+        if (flag != 1){
+            throw new CustomizeException(CustomizeErrorEnum.UPDATE_QUESTION_FAILURE);
+        }
         return "redirect:/personCenter";
     }
 

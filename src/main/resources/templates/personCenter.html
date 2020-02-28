@@ -26,16 +26,16 @@
             </span>
             <li th:each="question:${questions}" th:if="${questions}" class="list-group-item">
                 <a>问题id:</a>
-                <a th:text="${question.id}" th:href="@{/personCenter/question(id=${question.id})}"></a>
+                <a th:text="${question.id}" th:href="@{'/personCenter/question/'+${question.id}}"></a>
                 <br>
                 <a>标题:</a>
-                <a th:text="${question.title}" th:href="@{/personCenter/question(id=${question.id})}"></a>
+                <a th:text="${question.title}" th:href="@{'/personCenter/question/'+${question.id}}"></a>
                 <br>
                 <a>内容:</a>
-                <a th:text="${question.msg}" th:href="@{/personCenter/question(id=${question.id})}"></a>
+                <a th:text="${question.msg}" th:href="@{'/personCenter/question/'+${question.id}}"></a>
                 <br>
                 <a>标签:</a>
-                <a th:text="${question.tag}" th:href="@{/personCenter/question(id=${question.id})}"></a>
+                <a th:text="${question.tag}" th:href="@{'/personCenter/question/'+${question.id}}"></a>
             </li>
             <form method="post" action="/questionUpdate">
             <li th:if="${question}" class="list-group-item">
