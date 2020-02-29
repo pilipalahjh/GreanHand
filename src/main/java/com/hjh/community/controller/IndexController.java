@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 /*
@@ -31,7 +29,7 @@ public class IndexController {
     PaginationDTO<QuestionDTO> questionDTOPaginationDTO;
     //首页
     @GetMapping("/")
-    public String Index(HttpServletRequest httpServletRequest,Model model){
+    public String Index(Model model){
         //将查出来的问题列表返回前端 问题及用户
         List<QuestionDTO> questionDTOs;
 //        questionDTOs = questionService.questionDTOList();
@@ -52,19 +50,10 @@ public class IndexController {
         return "index";
     }
 
-    //获取问题详情
-    @GetMapping("/questionGet")
-    public String questionGet(@RequestParam(name="questionId")int questionId,Model model){
-        QuestionDTO questionDTO;
-        questionDTO = questionService.getQuestionDTOById(questionId);
-        model.addAttribute("questionDTO",questionDTO);
-        return "question";
-    }
-
     //分页相关
     //分页查询QuestionDTO
-    @GetMapping("/questionDTOPage")
-    public String questionDTOPage(@RequestParam int page,Model model){
+    @GetMapping("/questionPage/{page}")
+    public String questionDTOPage(@PathVariable int page,Model model){
         //一页显示的数量
         int size = 3;
         questionDTOPaginationDTO = questionService.getPaginationDTO(page,size);
@@ -74,7 +63,7 @@ public class IndexController {
         return "index";
     }
     //上一页
-    @GetMapping("/questionDTOPageLast")
+    @GetMapping("/questionPageLast")
     public String questionDTOPage(Model model){
         int currentPage;
         int pageSize;
@@ -94,7 +83,7 @@ public class IndexController {
         return "index";
     }
     //下一页
-    @GetMapping("/questionDTOPageNext")
+    @GetMapping("/questionPageNext")
     public String questionDTOPageNext(Model model){
         int currentPage;
         int pageSize;

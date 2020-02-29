@@ -1,9 +1,6 @@
 package com.hjh.community.controller;
 
-import com.hjh.community.exception.CustomizeErrorEnum;
-import com.hjh.community.exception.CustomizeException;
 import com.hjh.community.mapper.QuestionMapper;
-import com.hjh.community.model.Question;
 import com.hjh.community.service.QuestionService;
 import com.hjh.community.utils.ModelUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -32,16 +29,17 @@ public class PersonCenterController {
             return "redirect:/";
         }
         ModelUtils.setQuestionsByRequest(httpServletRequest,questionService,model);
-        return "/personCenter";
+        return "/question";
     }
 
     //个人中心每个选项的跳转
-    @GetMapping("/personCenter/{action}")
+    @GetMapping("/{action}")
     //获取action中的值
     public String personCenterAction(@PathVariable(name="action")String action,
                                      HttpServletRequest httpServletRequest,
                                      Model model){
         String titleMsg = "";
+        model.addAttribute("action",action);
         if (action.equals("questions")){
             titleMsg = "问题列表";
             //将questions放入model
@@ -58,18 +56,7 @@ public class PersonCenterController {
         }
 
         model.addAttribute("selection",titleMsg);
-        return "/personCenter";
+        return "/question";
     }
 
-    //个人中心点击question展示的信息
-    @GetMapping("/personCenter/question/{id}")
-    public String personQuestion(@PathVariable int id,Model model){
-        Question question = questionMapper.selectById(id);
-        if (question == null){
-            throw new CustomizeException(CustomizeErrorEnum.QUESTION_NOT_FOUND);
-        }
-        model.addAttribute("selection","问题详情");
-        model.addAttribute("question",question);
-        return "/personCenter";
-    }
 }

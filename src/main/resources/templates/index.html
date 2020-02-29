@@ -28,7 +28,7 @@
     <div  style="width: 60%">
         <ul class="list-group">
         <li class="list-group-item" th:each="questionDTO:${questionDTOs}">
-            <a th:text="${questionDTO.question.title}" th:href="@{/questionGet(questionId=${questionDTO.question.id})}"></a>
+            <a th:text="${questionDTO.question.title}" th:href="@{'/question/'+${questionDTO.question.id}}"></a>
             <br>
             <span th:text="${questionDTO.user.name}"></span>
             <br>
@@ -43,14 +43,14 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <li>
-                        <a href="/questionDTOPageLast">&laquo;</a>
+                        <a href="/questionPageLast">&laquo;</a>
                     </li>
                     <li th:each="page:${pageList}">
-                        <a th:text="${page}" th:href="@{/questionDTOPage(page=${page})}" th:if="${page}!=${currentPage}"></a>
+                        <a th:text="${page}" th:href="@{'/questionPage/'+${page}}" th:if="${page}!=${currentPage}"></a>
                         <a th:text="${page}" th:if="${page}==${currentPage}" style="background: #A9F5F2"></a>
                     </li>
                     <li>
-                        <a href="/questionDTOPageNext">&raquo;</a>
+                        <a href="/questionPageNext">&raquo;</a>
                     </li>
                 </ul>
             </nav>

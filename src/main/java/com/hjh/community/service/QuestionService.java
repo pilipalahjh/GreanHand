@@ -63,6 +63,13 @@ public class QuestionService {
         return questions;
     }
 
+    //更新阅读数+1
+    public int incrementView(int id){
+        int flag;
+        flag = questionMapper.updateById(questionMapper.selectById(id));
+        return flag;
+    }
+
     //根据questionId获取此问题信息以及创建者信息
     public QuestionDTO getQuestionDTOById(int questionId){
         QuestionDTO questionDTO = new QuestionDTO();
