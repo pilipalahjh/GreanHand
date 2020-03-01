@@ -33,8 +33,16 @@ public class QuestionController {
     //获取问题详情
     @GetMapping("/question/{id}")
     public String questionGet(@PathVariable(name = "id") int questionId, Model model){
+
+        //先阅读数自增
+        questionMapper.incView(questionId);
+
         QuestionDTO questionDTO;
+        //此问题不存在异常在service层抛出
         questionDTO = questionService.getQuestionDTOById(questionId);
+
+
+
         model.addAttribute("questionDTO",questionDTO);
         return "question";
     }

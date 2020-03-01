@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hjh.community.dto.PaginationDTO;
 import com.hjh.community.dto.QuestionDTO;
+import com.hjh.community.exception.CustomizeErrorEnum;
+import com.hjh.community.exception.CustomizeException;
 import com.hjh.community.mapper.QuestionMapper;
 import com.hjh.community.mapper.UserMapper;
 import com.hjh.community.model.Question;
@@ -63,13 +65,6 @@ public class QuestionService {
         return questions;
     }
 
-    //更新阅读数+1
-    public int incrementView(int id){
-        int flag;
-        flag = questionMapper.updateById(questionMapper.selectById(id));
-        return flag;
-    }
-
     //根据questionId获取此问题信息以及创建者信息
     public QuestionDTO getQuestionDTOById(int questionId){
         QuestionDTO questionDTO = new QuestionDTO();
@@ -77,6 +72,10 @@ public class QuestionService {
         User user;
 
         question = questionMapper.selectById(questionId);
+        if (question == null){
+            throw new CustomizeException(CustomizeErrorEnum.QUESTION_NOT_FOUND);
+        }
+
         user = userMapper.selectById(question.getCreator());
 
         if (user == null){
@@ -126,7 +125,6 @@ public class QuestionService {
 
     public int deleteById(int id){
         int i = 0;
-
         i = questionMapper.deleteById(id);
         return i;
     }

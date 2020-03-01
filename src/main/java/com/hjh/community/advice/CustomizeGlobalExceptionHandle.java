@@ -17,16 +17,17 @@ import javax.servlet.http.HttpServletRequest;
  */
 @ControllerAdvice
 @Slf4j
-//该注解可以处理请求异常
+//该注解处理所有异常
 public class CustomizeGlobalExceptionHandle {
 
-    //处理所有的异常
+    //处理controller层的异常
     @ExceptionHandler(Exception.class)
     public ModelAndView handleGlobalException(HttpServletRequest request,Model model, Throwable ex){
         HttpStatus httpStatus = getStatus(request);
 
         log.info("进入全局异常处理类 statusCode->"+httpStatus);
 
+        ex.printStackTrace();
         if (httpStatus.is4xxClientError()){
             model.addAttribute("error","客户端错误!!");
         }

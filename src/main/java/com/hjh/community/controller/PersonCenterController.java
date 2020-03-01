@@ -54,7 +54,6 @@ public class PersonCenterController {
         if (action.equals("personmsg")){
             titleMsg = "个人信息";
         }
-
         model.addAttribute("selection",titleMsg);
         return "/question";
     }

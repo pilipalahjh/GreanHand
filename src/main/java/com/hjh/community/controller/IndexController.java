@@ -1,6 +1,8 @@
 package com.hjh.community.controller;
 
 import com.hjh.community.dto.PaginationDTO;
+import com.hjh.community.exception.CustomizeErrorEnum;
+import com.hjh.community.exception.CustomizeException;
 import com.hjh.community.service.UserService;
 import com.hjh.community.dto.QuestionDTO;
 import com.hjh.community.service.QuestionService;
@@ -56,7 +58,12 @@ public class IndexController {
     public String questionDTOPage(@PathVariable int page,Model model){
         //一页显示的数量
         int size = 3;
+
         questionDTOPaginationDTO = questionService.getPaginationDTO(page,size);
+        if (page > questionDTOPaginationDTO.getPageCount()){
+            throw new CustomizeException(CustomizeErrorEnum.PAGE_NOT_FOUND);
+        }
+
         model.addAttribute("currentPage",page);
         //将 questionDTOPaginationDTO 中的值分别取值放入model
         ModelUtils.setQuestionPaginationDTO2Model(questionDTOPaginationDTO,model);

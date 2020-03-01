@@ -3,6 +3,7 @@ package com.hjh.community.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,10 +20,13 @@ public class CustomizeErrorController implements ErrorController {
     //返回错误页面
 
     @RequestMapping("/error")
-    public String handleError(HttpServletRequest request){
+    public String handleError(HttpServletRequest request, Model model){
         //获取statusCode:401,404,500
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-        log.info("statusCode->"+statusCode);
+        log.info("errController statusCode->"+statusCode);
+        if (statusCode == 404){
+            model.addAttribute("error","页面未找到");
+        }
         return "/error";
     }
 
