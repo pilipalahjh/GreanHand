@@ -1,23 +1,27 @@
 <!doctype>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
 
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/inknpm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/inknpm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
     <meta charset="UTF-8">
     <title>个人中心</title>
 </head>
 <body>
-    <div th:include="common::commonNav"></div>
-    <div class="container-fluid">
+<div th:include="common::commonNav"></div>
+<div class="container-fluid">
     <div style="float: left;width: 70%">
         <ul class="list-group-item" style="width: 90%">
             <span>
@@ -38,27 +42,26 @@
                 <a th:text="${question.tag}" th:href="@{'/question/'+${question.id}}"></a>
             </li>
             <form method="post" action="/questionUpdate">
-            <li th:if="${questionDTO}" class="list-group-item">
-                <input type="hidden" th:value="${questionDTO.question.id}" class="form-control" name = "id" />
-                <a>问题id:</a>
-                <a th:text="${questionDTO.question.id}"></a>
-                <a>|阅读数:</a>
-                <a th:text="${questionDTO.question.viewCount}"></a>
-                <br>
-                <a>标题:</a>
-                <input th:value="${questionDTO.question.title}" class="form-control" name ="title" />
-                <br>
-                <a>内容:</a>
-                <input th:value="${questionDTO.question.msg}" class="form-control" name ="msg" />
-                <br>
-                <a>标签:</a>
-                <input th:value="${questionDTO.question.tag}" class="form-control" name ="tag"/>
-                <br>
-                <button class="btn btn-warning" type="submit">
-                    修改
-                </button>
-
-                <span class="btn btn-danger">
+                <li th:if="${questionDTO}" class="list-group-item">
+                    <input type="hidden" th:value="${questionDTO.question.id}" class="form-control" name="id"/>
+                    <a>问题id:</a>
+                    <a th:text="${questionDTO.question.id}"></a>
+                    <a>|阅读数:</a>
+                    <a th:text="${questionDTO.question.viewCount}"></a>
+                    <br>
+                    <a>标题:</a>
+                    <input th:value="${questionDTO.question.title}" class="form-control" name="title"/>
+                    <br>
+                    <a>内容:</a>
+                    <input th:value="${questionDTO.question.msg}" class="form-control" name="msg"/>
+                    <br>
+                    <a>标签:</a>
+                    <input th:value="${questionDTO.question.tag}" class="form-control" name="tag"/>
+                    <br>
+                    <button class="btn btn-warning" type="submit">
+                        修改
+                    </button>
+                    <span class="btn btn-danger">
                         <a type="submit" th:href="'/questionDelete/'+${questionDTO.question.id}">删除</a>
                 </span>
             </form>
@@ -66,14 +69,17 @@
         </ul>
 
     </div>
-    <div style="float: left;width: 30%" >
+    <div style="float: left;width: 30%">
         <ul style="width: 90%">
             <span><h3>选项列表</h3></span>
-            <a href = "/questions" class="list-group-item" th:classappend="${action eq 'questions'}?'active'">问题列表<span class="badge" th:if="${questions}" th:text="${questions.size()}"></span></a>
-            <a href = "/mymsg" class="list-group-item" th:classappend="${action eq 'mymsg'}?'active'">我的消息<span class="badge">14</span></a>
-            <a href = "/personmsg" class="list-group-item" th:classappend="${action eq 'personmsg'}?'active'">个人信息<span class="badge">14</span></a>
+            <a href="/questions" class="list-group-item" th:classappend="${action eq 'questions'}?'active'">问题列表<span
+                    class="badge" th:if="${questions}" th:text="${questions.size()}"></span></a>
+            <a href="/mymsg" class="list-group-item" th:classappend="${action eq 'mymsg'}?'active'">我的消息<span
+                    class="badge">14</span></a>
+            <a href="/personmsg" class="list-group-item" th:classappend="${action eq 'personmsg'}?'active'">个人信息<span
+                    class="badge">14</span></a>
         </ul>
     </div>
-    </div>
+</div>
 </body>
 </html>

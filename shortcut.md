@@ -8,3 +8,6 @@
 - alt+7       查看类中的所有方法
 - alt+insert  可插入get set toString方法
 - ctrl+alt+v  将匿名对象新建成一个有名对象
+
+
+- ctrl+alt+l  整理html的格式

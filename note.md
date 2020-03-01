@@ -5,6 +5,7 @@
 - OkHttp 模拟get或者post方法请求
 - fastJson 快速处理json对象
 - Mybatis Plus
+- [pandao](https://pandao.github.io/editor.md) 富文本编辑器
 
 ## Controller层
 
@@ -256,9 +257,31 @@ public class MybatisPlusConfig {
 ### 异常请求类 可对/error 进行处理 要继承 ErrorController 接口
 - CustomizeErrorController
 
+## 文件上传
+### 前端
+```html
+    <form method="post" action="/image" enctype="multipart/form-data">
+        <input type="file" name="file"/>
+        <button type="submit">提交</button>
+```
 
+### Controller层
+```java
+    @PostMapping("/image")
+    public String postImage(@RequestParam MultipartFile file){
+        String fileName = file.getOriginalFilename();
+        String localPath = "E:/image/";
+        File localFile = new File(localPath,fileName);
+        try {
+            file.transferTo(localFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+```
 
-
-
-
+### 超过1mb的文件会失败 需要在配置文件中配置
+```text
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB
+```
 
